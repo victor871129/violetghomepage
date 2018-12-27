@@ -3,12 +3,6 @@ body {
   font-family: 'Ubuntu Mono', monospace;
   color: black;
   margin: 0px;
-   min-height:100%;
-  background: url(https://i.imgur.com/fHoZaDZ.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
 }
 
 @media only screen and (orientation:portrait){
