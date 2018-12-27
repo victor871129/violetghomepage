@@ -1,38 +1,45 @@
 body {
-  font-size: 200%;
-  font-family: 'Ubuntu Mono', monospace;
-  color: black;
-  margin: 0px;
+    font-size: 200%;
+    font-family: 'Ubuntu Mono', monospace;
+    color: black;
+    margin: 0px;
 }
 
-.turn {
-    transform: rotate(90deg);
- }
-
-.mainTitle {
-  background-color: black;
-  padding: 0 15px 0 15px;
-  color: white;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  position: absolute;
+#turn {
+    background-color: black;
+    font-size: 125%;
+    padding: 15px;
+    color: white;
+    bottom: 100px;
+    left: 0px;
+    right: 0px;
+    position: absolute;
 }
 
 .logoViolet {
-  color: #e5cce5; 
+    color: #e5cce5;
 }
 
 .logoCompany {
-  color: #ad5ead;
+    color: #ad5ead;
 }
 
-@media only screen and (orientation:landscape){
-  .turn{ display:block; }
-  .container{ display:none; }
+@media only screen and (orientation:portrait) {
+    #turn {
+        display: block;
+    }
+
+    #container {
+        display: none;
+    }
 }
 
-@media only screen and (orientation:portrait){
-  .turn{ display:none; }
-  .container{ display:block; }
+@media only screen and (orientation:landscape) {
+    #turn {
+        display: none;
+    }
+
+    #container {
+        display: block;
+    }
 }
