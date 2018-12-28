@@ -1,16 +1,22 @@
 body {
-    font-size: 200%;
-    font-family: 'Ubuntu Mono', monospace;
-    color: black;
-    margin: 0px;
+    /*font-size: 200%;*/
+    font-family: 'Ubuntu Mono', monospace !important;
+    zoom: 200%;
+}
+
+#firstContainer {
+    text-align: center;
+    bottom: 30px;
+    left: 0px;
+    right: 0px;
+    position: absolute;
 }
 
 #turn {
-    background-color: black;
-    font-size: 125%;
-    padding: 15px;
+    background-color: #343a40;
+    padding: 10px;
     color: white;
-    bottom: 100px;
+    top: 30px;
     left: 0px;
     right: 0px;
     position: absolute;
