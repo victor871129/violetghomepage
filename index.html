@@ -13,14 +13,14 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
 <body>
-    <div id="firstContainer">
+    <div id="firstContainer" class="turn">
         <button type="button" class="btn btn-primary" onclick="RedirectSite();">Continue</button>
     </div>
 
-    <div id="turn">
-        Please rotate your device
+    <div id="rotate" class="turn">
+        Please rotate your device or click below
     </div>
-    <div id="container">
+    <div class="container">
         <!--violet.guru studio-->
     </div>
     <script>
@@ -45,8 +45,8 @@
         }
 
         function RedirectSite() {
-            console.log("redirect");
-            //window.location.replace("https://www.youtube.com/embed/AALCj5tnsRQ?autoplay=1&loop=0&playlist=AALCj5tnsRQ&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&feature=oembed");
+            //console.log("redirect");
+            window.location.replace("https://www.youtube.com/embed/AALCj5tnsRQ?autoplay=1&loop=0&playlist=AALCj5tnsRQ&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&feature=oembed");
         }
     </script>
 </body>

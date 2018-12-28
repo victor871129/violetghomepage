@@ -12,7 +12,7 @@ body {
     position: absolute;
 }
 
-#turn {
+#rotate {
     background-color: #343a40;
     padding: 10px;
     color: white;
@@ -31,21 +31,21 @@ body {
 }
 
 @media only screen and (orientation:portrait) {
-    #turn {
+    .turn {
         display: block;
     }
 
-    #container {
+    .container {
         display: none;
     }
 }
 
 @media only screen and (orientation:landscape) {
-    #turn {
+    .turn {
         display: none;
     }
 
-    #container {
+    .container {
         display: block;
     }
 }
