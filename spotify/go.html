@@ -13,10 +13,23 @@
     <script>
 		//https://github.com/spotify/web-api-auth-examples
 		$().ready(function() {
-			const params = new URLSearchParams(window.location.search);
-			const accessToken = params.get("access_token");
+			var thisUrl = "https://violet.guru/spotify/go.html#access_token=BQA7s88iEJMW6VI0jjgtoE8s19pw2l-ftiyXpZEI3-kGOHdMmYDHC2nUTphyhdADc7h-70X_d42O6vL-7oKjrhXh716r_CF88gxuWlFM11aQz4Q8d1nNByU1SiNo_NxY8KwBdWyabN21ORShvgTBNlRmkuBIeg&token_type=Bearer&expires_in=3600&state=cyCc98Io6GG09Fsw";
+			//TODO thisUrl = window.location.search;
+
+			//https://stackoverflow.com/a/29934692
+			var accessToken = new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
 			console.log("FU");
 			console.log(accessToken);
+
+			//https://github.com/JMPerez/spotify-web-api-js
+			var spotifyApi = new SpotifyWebApi();
+			spotifyApi.setAccessToken(accessToken);
+			spotifyApi.getUserPlaylists()
+				.then(function(data) {
+					console.log('User playlists', data);
+				}, function(err) {
+					console.error(err);
+			});
 		})
     </script>
 </body>
