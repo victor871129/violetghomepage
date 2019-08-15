@@ -1,53 +1,18 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
 <head>
-    <title>violet.guru studio</title>
-    <META NAME="KEYWORDS" CONTENT="software,android,ios,iphone,smartphone,game,app,application, pc, mac">
-    <meta name="description" content="violet.guru studio">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#ad5ead">
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="main.css">
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<title>violet.guru studio</title>
+	<META NAME="KEYWORDS" CONTENT="software,android,ios,iphone,smartphone,game,app,application"> 
+	<meta name=”description” content=”violet.guru tech company”>
+	<meta name="viewport" content="width=device-width">
+	<meta name="theme-color" content="#ad5ead">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400" rel="stylesheet">
+		<!--"https://fonts.googleapis.com/css?family=Abhaya+Libre:400"-->
+	<link rel="stylesheet" href="main.css">
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
-<body>
-    <div id="firstContainer" class="turn">
-        <button type="button" class="btn btn-primary" onclick="RedirectSite();">Continue</button>
-    </div>
-
-    <div id="rotate" class="turn">
-        Please rotate your device or click below
-    </div>
-    <div class="container">
-        <!--violet.guru studio-->
-    </div>
-    <script>
-        SendVideo();
-
-        window.addEventListener("orientationchange", function () {
-            SendVideo();
-        }, false);
-
-        function SendVideo() {
-            //console.log("or", window.orientation);
-            var isMobile = /iPhone|iPod|Android/i.test(navigator.userAgent);
-
-            if (isMobile) {
-                if (window.orientation === 90 || window.orientation === -90) {
-                    RedirectSite();
-                }
-            }
-            else {
-                RedirectSite();
-            }
-        }
-
-        function RedirectSite() {
-            //console.log("redirect");
-            window.location.replace("https://www.youtube.com/embed/VfrwkbVJO84?autoplay=1&loop=1&playlist=VfrwkbVJO84&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3&feature=oembed");
-        }
-    </script>
-</body>
+<html>
+<div class="mainTitle">
+violet<span class="logoViolet">.</span>guru studio
+</div>
 </html>
