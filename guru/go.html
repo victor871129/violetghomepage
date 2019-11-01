@@ -3,34 +3,191 @@
 <head>
     <title>Spotifyx</title>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet" integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>-->
 	<script src="https://cdn.jsdelivr.net/npm/spotify-web-api-js@1.2.0/src/spotify-web-api.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/2.0.4/dexie.min.js"></script>
 </head>
 <body>
+	<div class="container">
+	<div class="progress">
+		<div id="progressBar" class="progress-bar bg-success" style="width: 5%"></div>
+	</div>
+	<table id="mainTable" class="table">
+		<thead>
+		<tr>
+		  <th scope="col">Playlist</th>
+		  <th scope="col">Title</th>
+		  <th scope="col">Artist</th>
+		  <th scope="col">Album</th>
+		</tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+	  </table>
+  </div>
     <script>
+		var accessToken;
+		var playlistItems = [];
+		var userTracks = [];
+		var playlistCount = 0;
+		var totalPlaylists = 0;
+		var waitTime = 0;
+		var db;
+		var progressBar = $("#progressBar");
+
 		//https://github.com/spotify/web-api-auth-examples
 		$().ready(function() {
-			var thisUrl = "https://violet.guru/spotify/go.html#access_token=BQA7s88iEJMW6VI0jjgtoE8s19pw2l-ftiyXpZEI3-kGOHdMmYDHC2nUTphyhdADc7h-70X_d42O6vL-7oKjrhXh716r_CF88gxuWlFM11aQz4Q8d1nNByU1SiNo_NxY8KwBdWyabN21ORShvgTBNlRmkuBIeg&token_type=Bearer&expires_in=3600&state=cyCc98Io6GG09Fsw";
+			var thisUrl = "https://violet.guru/spotify/go.html#access_token=BQC6stG1X7r8Uib8Py5dvACwaE3agJBi3mSIoVNTWtFGR_GtvQWGVGQAR6ttNxQLQmVzhcdBlM8v-zq9fru37PBU3hPQowwMBR5vsD8xQeM-zskvjWP2IxO_iPAJkV2-qL0xiK67JNpHuCiuCvNXWYRRoi_h9g&token_type=Bearer&expires_in=3600&state=r7MlEhXAMtNq3oE6";
 			//TODO thisUrl = window.location.search;
 
 			//https://stackoverflow.com/a/29934692
-			var accessToken = new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
-			console.log("FU");
-			console.log(accessToken);
+			accessToken = new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
 
-			//https://github.com/JMPerez/spotify-web-api-js
-			var spotifyApi = new SpotifyWebApi();
-			spotifyApi.setAccessToken(accessToken);
-			spotifyApi.getUserPlaylists()
-				.then(function(data) {
-					console.log('User playlists', data);
-				}, function(err) {
-					console.error(err);
+			db = new Dexie("tracks_database");
+			db.version(1).stores({
+				tracks: '++id,titleName,artistsText,albumName,playlistName,playlistOrder,isDoubleDollar,artistsList,playlistId'
+			});
+
+			db.tracks.count().then(function(countTracks) {
+				console.log("FU");
+
+				if(countTracks === 0) {
+					StartGetData();
+				}
+				else {
+					FilterByParameter();
+				}
 			});
 		})
+
+		function ResetData() {
+			db.delete();
+		}
+
+		function StartGetData() {
+			console.log("Getting Data");
+			progressBar.width(5 + "%");
+			var spotifyApi = new SpotifyWebApi();
+			spotifyApi.setAccessToken(accessToken);
+			spotifyApi.getMe()
+				.then(function(data) {
+					//console.log('User', data);
+					var userId = data.id;
+					GetPlaylists(spotifyApi, userId, 0);
+				}, function(err) {
+					console.error(err);
+				});
+		}
+
+		function GetPlaylists(spotifyApi, userId, offsetValue) {
+			//console.log("Get Playlist " + offsetValue);
+
+			//https://github.com/JMPerez/spotify-web-api-js
+			spotifyApi.getUserPlaylists(userId, {offset: offsetValue})
+				.then(function(data) {
+					//console.log('User playlists', data);
+					if(data.items.length > 0 && offsetValue < 1500) { //TESTDO Poner 15000
+						data.items.forEach(function(playList, index){
+							if(playList.owner.id === userId) {
+								playlistItems.push({id: playList.id, name: playList.name, isDollar: playList.name.includes("$$")});
+							}
+						});
+
+						GetPlaylists(spotifyApi, userId, offsetValue + 20);
+
+					}
+					else {
+						playlistCount = playlistItems.length;
+						totalPlaylists = playlistItems.length;
+						console.log("playlistCount " + playlistCount, playlistItems);
+						progressBar.width(15 + "%");
+						playlistItems.forEach(function(playlistItem, index) {
+							waitTime += 100;
+							setTimeout(function() {
+								TracksFromPlaylist(spotifyApi, playlistItem);
+							}, waitTime);
+						});
+					}
+				}, function(err) {
+					console.error(err);
+				});
+		}
+
+		function TracksFromPlaylist(spotifyApi, playlistItem) {
+			//console.log("TracksFromPlaylist");
+			spotifyApi.getPlaylist(playlistItem.id)
+				.then(function(data) {
+					playlistCount--;
+
+					//console.log('Current data', data);
+					data.tracks.items.forEach(function(trackInfo, index){
+						//console.log('Track info', trackInfo);
+						progressBar.width(15 + 80 * (totalPlaylists - playlistCount) / totalPlaylists + "%");
+						userTracks.push({playlistId: playlistItem.id, playlistName: playlistItem.name, playlistIsDollar: playlistItem.isDollar, track: trackInfo.track});
+
+						if(playlistCount === 0 && index === data.tracks.items.length - 1) {
+							//console.log("userTracks", userTracks.length, userTracks[2]);
+							SendToDatabase();
+
+							//TODO put() ejecuta .then muchas veces
+							FilterByParameter();
+						}
+					});
+				}, function(err) {
+					console.error(err);
+				});
+		}
+
+		function SendToDatabase() {
+			userTracks.forEach(function(element, index){
+				var artistsList = [];
+				element.track.artists.forEach(function(item){
+					artistsList.push(item.name);
+				});
+
+				db.tracks.put({
+					playlistId: element.playlistId,
+					albumName: element.track.album.name,
+					artistsList: element.track.artists,
+					artistsText: artistsList.join(", "),
+					titleName: element.track.name,
+					playlistName: element.playlistName,
+					isDoubleDollar: element.playlistIsDollar,
+					playlistOrder: 0
+				});
+			});
+		}
+
+		function FilterByParameter() {
+			//TODO
+			//textbox, label busqueda actual y bot�n buscar y bot�n "Reset & Reload Database"
+			//no esta buscando en canciones favoritas
+			//Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
+			console.log("FilterByParameter");
+			var parameter = /justin/i;
+
+			var withDoubleDollar = false;
+			db.tracks
+			.filter (function (track) {
+				return (withDoubleDollar || !track.isDoubleDollar) &&
+				(parameter.test(track.titleName) || parameter.test(track.albumName) || parameter.test(track.artistsText));
+			})
+			//https://github.com/dfahlander/Dexie.js/issues/161
+			.toArray(a => a.sort((a, b) => a.playlistName < b.playlistName ? -1 : a.playlistName > b.playlistName? 1 : (a.titleName < b.titleName ? -1 : a.titleName > b.titleName ? 1 : 0)))
+			.then(function(result) {
+				result.forEach(function(item, index){
+					$("#mainTable>tbody").append("<tr><td>"+item.playlistName+
+						"</td><td>"+item.titleName+
+						"</td><td>"+item.artistsText+
+						"</td><td>"+item.albumName+"</td></tr>");
+				});
+				progressBar.parent().addClass("invisible");
+			});
+		}
     </script>
 </body>
 </html>
