@@ -180,7 +180,7 @@
 			
 			let queryText = GetQueryString("q");
 			console.log("FilterByParameter0", queryText);
-			var parameter = new RegExp(queryText.length > 0 ? decodeURIComponent(queryText) : "fade", "i");
+			var parameter = new RegExp(queryText.length > 0 ? decodeURIComponent(queryText) : "the", "i");
 
 			var withDoubleDollar = false;
 			db.tracks
