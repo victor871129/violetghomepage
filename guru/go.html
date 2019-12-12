@@ -178,9 +178,9 @@
 			//botón 'Refresh Library', borra y carga de nuevo la DB
 			//Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 			
-			let queryText = decodeURIComponent(GetQueryString("q"));
-			console.log("FilterByParameter3", queryText);
-			var parameter = new RegExp(queryText.length > 0 ? queryText : "fade", "i");
+			let queryText = GetQueryString("q");
+			console.log("FilterByParameter0", queryText);
+			var parameter = new RegExp(queryText.length > 0 ? decodeURIComponent(queryText) : "fade", "i");
 
 			var withDoubleDollar = false;
 			db.tracks
