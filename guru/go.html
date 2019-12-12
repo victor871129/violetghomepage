@@ -41,8 +41,7 @@
 
 		//https://github.com/spotify/web-api-auth-examples
 		$().ready(function() {
-			var thisUrl = "https://violet.guru/guru/go.html#access_token=BQDRXgHDIWjjEVmzwetON_PFZmVZtQoOJ9ObhQGkeaU6jXtjlNtLdTuhHvQdpLABiMvd3mJX7SFk7c55GcVn90hHnUzO0nZZWFSVv1LwRM0U-Bc1tOSOymk3rvWsLvrU5j46k60bulsaBXr2y5FbqNdScNU&token_type=Bearer&expires_in=3600&state=CkznaszGoiH4PkPR";
-			//TODO thisUrl = window.location.search;
+			thisUrl = window.location.href;
 
 			//https://stackoverflow.com/a/29934692
 			accessToken = new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
