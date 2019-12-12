@@ -42,7 +42,7 @@
 		//https://github.com/spotify/web-api-auth-examples
 		$().ready(function() {
 			let thisUrl = window.location.href;
-			accessToken = GetHashParameter(thisUrl, "access_token");
+			accessToken = GetHashAccessToken(thisUrl, "access_token");
 
 			db = new Dexie("tracks_database");
 			db.version(1).stores({
@@ -62,8 +62,15 @@
 		})
 	    
 	    //https://stackoverflow.com/a/29934692
-	    function GetHashParameter(thisUrl, param) {
+	    function GetHashAccessToken(thisUrl, param) {
 	      return new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match(param) !== null) return true; })[0].split('=')[1];
+	    }
+	    
+	    const GetQueryString = function (name) {
+    		var results = new RegExp('[\?&]' + name + '=([^&#]*)')
+                      .exec(window.location.search);
+
+    		return (results !== null) ? results[1] || 0 : false;
 	    }
 
 		function ResetData() {
@@ -171,8 +178,8 @@
 			//botón 'Refresh Library', borra y carga de nuevo la DB
 			//Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 			
-			let queryText = decodeURIComponent(GetHashParameter(window.location.href, "q"));
-			console.log("FilterByParameter1", queryText);
+			let queryText = decodeURIComponent(GetQueryString("q"));
+			console.log("FilterByParameter3", queryText);
 			var parameter = new RegExp(queryText.length > 0 ? queryText : "fade", "i");
 
 			var withDoubleDollar = false;
