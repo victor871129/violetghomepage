@@ -42,9 +42,7 @@
 		//https://github.com/spotify/web-api-auth-examples
 		$().ready(function() {
 			let thisUrl = window.location.href;
-
-			//https://stackoverflow.com/a/29934692
-			accessToken = new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
+			accessToken = getHashParameter(thisUrl, "access_token");
 
 			db = new Dexie("tracks_database");
 			db.version(1).stores({
@@ -62,6 +60,11 @@
 				}
 			});
 		})
+	    
+	    //https://stackoverflow.com/a/29934692
+	    function GetHashParameter(thisUrl, param) {
+	      return new URL(thisUrl).hash.split('&').filter(function(el) { if(el.match(param) !== null) return true; })[0].split('=')[1];
+	    }
 
 		function ResetData() {
 			db.delete();
@@ -165,9 +168,12 @@
 			//TODO
 			//textbox, label busqueda actual y bot�n buscar y bot�n "Reset & Reload Database"
 			//no esta buscando en canciones favoritas
+			//botón 'Refresh Library', borra y carga de nuevo la DB
 			//Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 			console.log("FilterByParameter");
-			var parameter = /fade/i;
+			
+			let queryText = decodeURIComponent(GetHashParameter(window.location.href, "q"));
+			var parameter = queryText || /fade/i;
 
 			var withDoubleDollar = false;
 			db.tracks
