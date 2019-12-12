@@ -42,7 +42,7 @@
 		//https://github.com/spotify/web-api-auth-examples
 		$().ready(function() {
 			let thisUrl = window.location.href;
-			accessToken = getHashParameter(thisUrl, "access_token");
+			accessToken = GetHashParameter(thisUrl, "access_token");
 
 			db = new Dexie("tracks_database");
 			db.version(1).stores({
