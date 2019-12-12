@@ -173,7 +173,7 @@
 			console.log("FilterByParameter");
 			
 			let queryText = decodeURIComponent(GetHashParameter(window.location.href, "q"));
-			var parameter = new RegExp(queryText || "fade");
+			var parameter = new RegExp(queryText || "fade", "i");
 
 			var withDoubleDollar = false;
 			db.tracks
