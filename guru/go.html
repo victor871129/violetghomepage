@@ -170,9 +170,9 @@
 			//no esta buscando en canciones favoritas
 			//botón 'Refresh Library', borra y carga de nuevo la DB
 			//Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
-			console.log("FilterByParameter1");
 			
 			let queryText = decodeURIComponent(GetHashParameter(window.location.href, "q"));
+			console.log("FilterByParameter1", queryText);
 			var parameter = new RegExp(queryText.length > 0 ? queryText : "fade", "i");
 
 			var withDoubleDollar = false;
