@@ -102,7 +102,7 @@
       if (countTracks === 0) {
         StartGetData();
       } else {
-        console.log("Now you can search");
+        console.log("Now you can search from your local database");
         FilterByParameter();
       }
     });
@@ -225,7 +225,7 @@
     });
 
     db.tracks.bulkPut(dataItems).then(() => {
-      console.log("Now you can search");
+      console.log("Now you can search from your local database");
       FilterByParameter();
     });
   }
