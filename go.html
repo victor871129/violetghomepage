@@ -25,6 +25,10 @@
         .btn.btn-outline-success {
             opacity: 50%;
         }
+
+        .table th {
+            border-top: none;
+        }
     </style>
 </head>
 <body>
@@ -258,8 +262,10 @@
       .toArray(a => a.sort((a, b) => a.playlistName < b.playlistName ? -1 : a.playlistName > b.playlistName ? 1 : (a.titleName < b.titleName ? -1 : a.titleName > b.titleName ? 1 : 0)))
       .then(function (result) {
 
+        mainTable.find("tbody").html("");
+
         if (result.length === 0) {
-          MessageTable("Not found");
+          MessageTable("No results");
         } else {
           result.forEach(function (item) {
             mainTable.find("tbody").append("<tr><td>" + item.playlistName +
