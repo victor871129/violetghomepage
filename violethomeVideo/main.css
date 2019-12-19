@@ -1,0 +1,51 @@
+body {
+    /*font-size: 200%;*/
+    font-family: 'Ubuntu Mono', monospace !important;
+    zoom: 200%;
+}
+
+#firstContainer {
+    text-align: center;
+    bottom: 30px;
+    left: 0px;
+    right: 0px;
+    position: absolute;
+}
+
+#rotate {
+    background-color: #343a40;
+    padding: 10px;
+    color: white;
+    top: 30px;
+    left: 0px;
+    right: 0px;
+    position: absolute;
+}
+
+.logoViolet {
+    color: #e5cce5;
+}
+
+.logoCompany {
+    color: #ad5ead;
+}
+
+@media only screen and (orientation:portrait) {
+    .turn {
+        display: block;
+    }
+
+    .container {
+        display: none;
+    }
+}
+
+@media only screen and (orientation:landscape) {
+    .turn {
+        display: none;
+    }
+
+    .container {
+        display: block;
+    }
+}
