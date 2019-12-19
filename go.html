@@ -27,7 +27,7 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text">Search:</div>
                 </div>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search text"
+                <input type="text" class="form-control" id="searchInput" placeholder="Love"
                        value="Love">
             </div>
         </div>
@@ -48,13 +48,13 @@
         </table>
 </div>
 <script>
-  var accessToken;
-  var playlistItems = [];
-  var userTracks = [];
-  var playlistCount = 0;
-  var totalPlaylists = 0;
-  var waitTime = 0;
-  var db;
+  let accessToken;
+  const playlistItems = [];
+  const userTracks = [];
+  let playlistCount = 0;
+  let totalPlaylists = 0;
+  let waitTime = 0;
+  let db;
   const progressBar = $("#progressBar");
   const searchInput = $("#searchInput");
 
@@ -77,7 +77,7 @@
         FilterByParameter();
       }
     });
-  })
+  });
 
   /** https://stackoverflow.com/a/29934692
    * @return {string}
@@ -95,43 +95,42 @@
   function StartGetData() {
     console.log("Getting Data");
     progressBar.width(5 + "%");
-    var spotifyApi = new SpotifyWebApi();
-    spotifyApi.setAccessToken(accessToken);
-    spotifyApi.getMe()
+    const musicApi = new SpotifyWebApi();
+    musicApi.setAccessToken(accessToken);
+    musicApi.getMe(null, null)
       .then(function (data) {
         //console.log('User', data);
-        var userId = data.id;
-        GetPlaylists(spotifyApi, userId, 0);
+        GetPlaylists(musicApi, data.id, 0);
       }, function (err) {
         console.error(err);
       });
   }
 
-  function GetPlaylists(spotifyApi, userId, offsetValue) {
+  function GetPlaylists(musicApi, userId, offsetValue) {
     //console.log("Get Playlist " + offsetValue);
 
     //https://github.com/JMPerez/spotify-web-api-js
-    spotifyApi.getUserPlaylists(userId, {offset: offsetValue}, null)
+    musicApi.getUserPlaylists(userId, {offset: offsetValue}, undefined)
       .then(function (data) {
         //console.log('User playlists', data);
         if (data.items.length > 0 && offsetValue < 1500) { //TESTDO Poner 15000
-          data.items.forEach(function (playList, index) {
+          data.items.forEach(function (playList) {
             if (playList.owner.id === userId) {
               playlistItems.push({id: playList.id, name: playList.name, isDollar: playList.name.includes("$$")});
             }
           });
 
-          GetPlaylists(spotifyApi, userId, offsetValue + 20);
+          GetPlaylists(musicApi, userId, offsetValue + 20);
 
         } else {
           playlistCount = playlistItems.length;
           totalPlaylists = playlistItems.length;
           console.log("playlistCount " + playlistCount, playlistItems);
           progressBar.width(15 + "%");
-          playlistItems.forEach(function (playlistItem, index) {
+          playlistItems.forEach(function (playlistItem) {
             waitTime += 100;
             setTimeout(function () {
-              TracksFromPlaylist(spotifyApi, playlistItem);
+              TracksFromPlaylist(musicApi, playlistItem);
             }, waitTime);
           });
         }
@@ -140,9 +139,9 @@
       });
   }
 
-  function TracksFromPlaylist(spotifyApi, playlistItem) {
+  function TracksFromPlaylist(musicApi, playlistItem) {
     //console.log("TracksFromPlaylist");
-    spotifyApi.getPlaylist(playlistItem.id)
+    musicApi.getPlaylist(playlistItem, undefined, undefined)
       .then(function (data) {
         playlistCount--;
 
@@ -161,7 +160,7 @@
             //console.log("userTracks", userTracks.length, userTracks[2]);
             SendToDatabase();
 
-            //TODO put() ejecuta .then muchas veces
+            //TODO put() executes .then a lot
             FilterByParameter();
           }
         });
@@ -171,8 +170,8 @@
   }
 
   function SendToDatabase() {
-    userTracks.forEach(function (element, index) {
-      var artistsList = [];
+    userTracks.forEach(function (element) {
+      const artistsList = [];
       element.track.artists.forEach(function (item) {
         artistsList.push(item.name);
       });
@@ -197,9 +196,8 @@
     //botón 'Refresh Library', borra y carga de nuevo la DB
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
-    let queryText = GetQueryString("q");
-    console.log("FilterByParameter0", queryText);
-    var parameter = new RegExp(queryText.length > 0 ? decodeURIComponent(queryText) : "the", "i");
+    let queryText = searchInput.value();
+    var parameter = new RegExp(queryText.length > 0 ? decodeURIComponent(queryText) : "Love", "i");
 
     var withDoubleDollar = false;
     db.tracks
