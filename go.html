@@ -58,7 +58,7 @@
         </tbody>
     </table>
     <div>Report a bug at hello@violet.guru</div>
-    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reset & Reload Library</button>
+    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reload Library</button>
 </div>
 <script>
   ConsoleLogHTML.connect(document.getElementById("consoleMessages"));
@@ -90,7 +90,7 @@
     });
 
     db.tracks.count().then(function (countTracks) {
-      console.log("FU");
+      console.log("Started library");
 
       if (countTracks === 0) {
         StartGetData();
@@ -121,7 +121,7 @@
   }
 
   function StartGetData() {
-    console.log("Getting Data");
+    console.log("Loading library");
     progressBar.width(5 + "%");
     const musicApi = new SpotifyWebApi();
     musicApi.setAccessToken(accessToken);
@@ -153,7 +153,7 @@
         } else {
           playlistCount = playlistItems.length;
           totalPlaylists = playlistItems.length;
-          console.log("playlistCount " + playlistCount);
+          console.log("Loading " + playlistCount + " playlists");
           progressBar.width(15 + "%");
           playlistItems.forEach(function (playlistItem) {
             waitTime += 100;
@@ -220,6 +220,7 @@
   function FilterByParameter() {
     //TODO
     //no esta buscando en liked songs
+    //console messages que aparezca de arriba hacia abajo. Poner mas CSS
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
     mainTable.find("tbody").html("");
