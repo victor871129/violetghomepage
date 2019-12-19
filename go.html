@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
-    <script type="application/javascript" src="//cdn.rawgit.com/Alorel/console-log-html/master/console-log-html.min.js"></script>
+    <script type="application/javascript"
+            src="//cdn.rawgit.com/Alorel/console-log-html/master/console-log-html.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
             crossorigin="anonymous"></script>
@@ -58,7 +59,8 @@
         </tbody>
     </table>
     <div>Report a bug at hello@violet.guru</div>
-    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reload database</button>
+    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reload database
+    </button>
 </div>
 <script>
   ConsoleLogHTML.connect(document.getElementById("consoleMessages"));
@@ -224,7 +226,7 @@
     mainTable.find("tbody").html("");
     let queryText = searchInput.val();
 
-    if(queryText.length < 2) {
+    if (queryText.length < 2) {
       return;
     }
 
