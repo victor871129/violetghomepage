@@ -121,7 +121,7 @@
   }
 
   function StartGetData() {
-    console.log("Loading library");
+    console.log("Loading playlists names");
     progressBar.width(5 + "%");
     const musicApi = new SpotifyWebApi();
     musicApi.setAccessToken(accessToken);
@@ -153,7 +153,7 @@
         } else {
           playlistCount = playlistItems.length;
           totalPlaylists = playlistItems.length;
-          console.log("Loading " + playlistCount + " playlists");
+          console.log("Loading tracks of " + playlistCount + " playlists");
           progressBar.width(15 + "%");
           playlistItems.forEach(function (playlistItem) {
             waitTime += 100;
@@ -249,7 +249,8 @@
         });
 
         progressBar.parent().addClass("invisible");
-        searchInput.parent().parent().parent().removeClass("invisible")
+        searchInput.parent().parent().parent().removeClass("invisible");
+        searchInput.focus();
       });
   }
 </script>
