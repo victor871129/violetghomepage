@@ -45,7 +45,7 @@
     </div>
     <p>Messages (Scrollable)</p>
     <ul id="consoleMessages"></ul>
-    <table id="mainTable" class="table" style="display: none;">
+    <table id="mainTable" class="table">
         <thead>
         <tr>
             <th scope="col">Playlist</th>
@@ -58,7 +58,7 @@
         </tbody>
     </table>
     <div>Report a bug at hello@violet.guru</div>
-    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reload Library</button>
+    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reload database</button>
 </div>
 <script>
   ConsoleLogHTML.connect(document.getElementById("consoleMessages"));
@@ -90,7 +90,7 @@
     });
 
     db.tracks.count().then(function (countTracks) {
-      console.log("Started library");
+      console.log("Database started");
 
       if (countTracks === 0) {
         StartGetData();
@@ -188,7 +188,7 @@
             //console.log("userTracks", userTracks.length, userTracks[2]);
             SendToDatabase();
 
-            //TODO put() executes .then a lot
+
             FilterByParameter();
           }
         });
@@ -198,6 +198,9 @@
   }
 
   function SendToDatabase() {
+    console.log("Saving tracks to database");
+
+    //TODO put() executes .then a lot
     userTracks.forEach(function (element) {
       const artistsList = [];
       element.track.artists.forEach(function (item) {
