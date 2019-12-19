@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
+    <script type="application/javascript" src="//cdn.rawgit.com/Alorel/console-log-html/master/console-log-html.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
             crossorigin="anonymous"></script>
@@ -27,8 +28,8 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text">Search:</div>
                 </div>
-                <input type="text" class="form-control" id="searchInput" placeholder="Love"
-                       value="Love">
+                <input type="text" class="form-control" id="searchInput" placeholder="Rock"
+                       value="Rock">
             </div>
         </div>
         <div class="col-sm">
@@ -48,8 +49,12 @@
     </table>
     <div>Report a bug at hello@violet.guru</div>
     <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reset & Reload Library</button>
+    <h5>Messages:</h5>
+    <ul id="consoleMessages"></ul>
 </div>
 <script>
+  ConsoleLogHTML.connect(document.getElementById("consoleMessages"));
+
   let accessToken;
   const playlistItems = [];
   /**
@@ -211,7 +216,7 @@
 
     mainTable.hide();
     let queryText = searchInput.val();
-    const parameter = new RegExp(queryText.length > 0 ? queryText : "Love", "i");
+    let parameter = new RegExp(queryText.length >= 3 ? queryText : "Rock", "i");
 
     const withDoubleDollar = false;
     db.tracks
