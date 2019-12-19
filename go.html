@@ -34,7 +34,7 @@
         <div class="col-sm">
         </div>
     </div>
-    <table id="mainTable" class="table">
+    <table id="mainTable" class="table" style="display: none;">
         <thead>
         <tr>
             <th scope="col">Playlist</th>
@@ -46,7 +46,8 @@
         <tbody>
         </tbody>
     </table>
-    <div>Report a bug: hello@violet.guru</div>
+    <div>Report a bug at hello@violet.guru</div>
+    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reset & Reload Library</button>
 </div>
 <script>
   let accessToken;
@@ -61,6 +62,9 @@
   let db;
   const progressBar = $("#progressBar");
   const searchInput = $("#searchInput");
+  const mainTable = $("#mainTable");
+  const divContainer = $("div.container");
+  let searchTimeout = null;
 
   //https://github.com/spotify/web-api-auth-examples
   $().ready(function () {
@@ -83,6 +87,13 @@
     });
   });
 
+  divContainer.on('keyup', '#searchInput', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(FilterByParameter, 1000)
+  });
+
+  divContainer.on('click', "#resetLibrary", ResetData);
+
   /** https://stackoverflow.com/a/29934692
    * @return {string}
    */
@@ -93,7 +104,7 @@
   }
 
   function ResetData() {
-    db.delete();
+    db.delete().then(StartGetData);
   }
 
   function StartGetData() {
@@ -129,7 +140,7 @@
         } else {
           playlistCount = playlistItems.length;
           totalPlaylists = playlistItems.length;
-          console.log("playlistCount " + playlistCount, playlistItems);
+          console.log("playlistCount " + playlistCount);
           progressBar.width(15 + "%");
           playlistItems.forEach(function (playlistItem) {
             waitTime += 100;
@@ -195,12 +206,11 @@
 
   function FilterByParameter() {
     //TODO
-    //textbox, label busqueda actual y bot�n buscar y bot�n "Reset & Reload Database"
-    //no esta buscando en canciones favoritas
-    //botón 'Refresh Library', borra y carga de nuevo la DB
+    //no esta buscando en liked songs
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
-    let queryText = searchInput.value();
+    mainTable.hide();
+    let queryText = searchInput.val();
     const parameter = new RegExp(queryText.length > 0 ? queryText : "Love", "i");
 
     const withDoubleDollar = false;
@@ -213,11 +223,12 @@
       .toArray(a => a.sort((a, b) => a.playlistName < b.playlistName ? -1 : a.playlistName > b.playlistName ? 1 : (a.titleName < b.titleName ? -1 : a.titleName > b.titleName ? 1 : 0)))
       .then(function (result) {
         result.forEach(function (item) {
-          $("#mainTable>tbody").append("<tr><td>" + item.playlistName +
+          mainTable.find("tbody").append("<tr><td>" + item.playlistName +
             "</td><td>" + item.titleName +
             "</td><td>" + item.artistsText +
             "</td><td>" + item.albumName + "</td></tr>");
         });
+        mainTable.show();
         progressBar.parent().addClass("invisible");
         searchInput.parent().parent().parent().removeClass("invisible")
       });
