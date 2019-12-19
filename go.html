@@ -185,7 +185,7 @@
           });
 
           if (playlistCount === 0 && index === data.tracks.items.length - 1) {
-            console.log("userTracks", userTracks.length, userTracks[2]);
+            //console.log("userTracks", userTracks.length, userTracks[2]);
             SendToDatabase(userTracks);
           }
         });
@@ -228,6 +228,7 @@
   function FilterByParameter() {
     //TODO
     //no esta buscando en liked songs
+    //busqueda con acentos insensitivos
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
