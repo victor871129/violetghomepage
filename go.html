@@ -50,6 +50,9 @@
 <script>
   let accessToken;
   const playlistItems = [];
+  /**
+   * @type {Array}
+   */
   const userTracks = [];
   let playlistCount = 0;
   let totalPlaylists = 0;
@@ -197,9 +200,9 @@
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
     let queryText = searchInput.value();
-    var parameter = new RegExp(queryText.length > 0 ? decodeURIComponent(queryText) : "Love", "i");
+    const parameter = new RegExp(queryText.length > 0 ? queryText : "Love", "i");
 
-    var withDoubleDollar = false;
+    const withDoubleDollar = false;
     db.tracks
       .filter(function (track) {
         return (withDoubleDollar || !track.isDoubleDollar) &&
