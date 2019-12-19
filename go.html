@@ -86,6 +86,7 @@
   const mainTable = $("#mainTable");
   const divContainer = $("div.container");
   let searchTimeout = null;
+  let isFocus = false;
 
   //https://github.com/spotify/web-api-auth-examples
   $().ready(function () {
@@ -233,7 +234,7 @@
    * @return {string}
    */
   function MessageTable(textValue) {
-    return `<tr><td colspan='4'>${textValue}</td></tr>`;
+    mainTable.find("tbody").html(`<tr><td colspan='4'>${textValue}</td></tr>`);
   }
 
   function FilterByParameter() {
@@ -243,16 +244,17 @@
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
-    mainTable.find("tbody").html(MessageTable("Searching..."));
-    let queryText = searchInput.val();
+    mainTable.find("tbody").html("");
 
+    let queryText = searchInput.val();
     if (queryText.length < 2) {
+      MessageTable("Search text is short");
       return;
     }
 
     let parameter = new RegExp(queryText, "i");
-
     const withDoubleDollar = false;
+    MessageTable("Searching...");
     db.tracks
       .filter(function (track) {
         return (withDoubleDollar || !track.playlistIsDollar) &&
@@ -277,8 +279,12 @@
 
         progressBar.parent().addClass("invisible");
         searchInput.parent().parent().parent().removeClass("invisible");
-        searchInput.focus();
-      });
+        if (!isFocus) {
+          searchInput.focus();
+          isFocus = true;
+        }
+      })
+    ;
   }
 </script>
 </body>
