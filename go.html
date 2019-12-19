@@ -193,7 +193,7 @@
   }
 
   function ErrorHandling(err) {
-    console.error(err.responseText, err);
+    console.error(err.responseText, err.status, err);
 
     if(err.status === 401) {
       console.error("Denied permission, go to Home and try again");
