@@ -36,8 +36,8 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text">Search:</div>
                 </div>
-                <input type="text" class="form-control" id="searchInput" placeholder="Rock"
-                       value="Rock">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search text"
+                       value="Rock" autofocus>
             </div>
         </div>
         <div class="col-sm">
@@ -222,9 +222,14 @@
     //no esta buscando en liked songs
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
 
-    mainTable.hide();
+    mainTable.find("tbody").html("");
     let queryText = searchInput.val();
-    let parameter = new RegExp(queryText.length >= 3 ? queryText : "Rock", "i");
+
+    if(queryText.length < 3) {
+      return;
+    }
+
+    let parameter = new RegExp(queryText, "i");
 
     const withDoubleDollar = false;
     db.tracks
@@ -241,7 +246,7 @@
             "</td><td>" + item.artistsText +
             "</td><td>" + item.albumName + "</td></tr>");
         });
-        mainTable.show();
+
         progressBar.parent().addClass("invisible");
         searchInput.parent().parent().parent().removeClass("invisible")
       });
