@@ -79,7 +79,9 @@
     });
   })
 
-  //https://stackoverflow.com/a/29934692
+  /** https://stackoverflow.com/a/29934692
+   * @return {string}
+   */
   function GetHashAccessToken(thisUrl, param) {
     return new URL(thisUrl).hash.split('&').filter(function (el) {
       if (el.match(param) !== null) return true;
@@ -215,6 +217,7 @@
             "</td><td>" + item.albumName + "</td></tr>");
         });
         progressBar.parent().addClass("invisible");
+        searchInput.parent().parent().parent().removeClass("invisible")
       });
   }
 </script>
