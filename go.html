@@ -18,12 +18,19 @@
             list-style: none;
             border: 1px solid #000;
             overflow-y: auto;
+            overflow-x: hidden;
             max-height: 100px;
+        }
+
+        .btn.btn-outline-success {
+            opacity: 50%;
         }
     </style>
 </head>
 <body>
 <div class="container">
+    <a href="https://violet.guru" id="spotifyDenied" class="btn btn-outline-success">Go to Home</a>
+    <button type="button" class="btn btn-outline-success" id="resetLibrary">Reload database</button>
     <h4>Spotify Search In All My Own Playlists Global - violet.guru</h4>
     <div class="progress">
         <div id="progressBar" class="progress-bar bg-success" style="width: 5%"></div>
@@ -59,8 +66,7 @@
         </tbody>
     </table>
     <div>Report a bug at hello@violet.guru</div>
-    <button type="button" class="btn btn-outline-success" id="resetLibrary" style="opacity: 50%;">Reload database
-    </button>
+
 </div>
 <script>
   ConsoleLogHTML.connect(document.getElementById("consoleMessages"));
@@ -126,9 +132,7 @@
       .then(function (data) {
         //console.log('User', data);
         GetPlaylists(musicApi, data.id, 0);
-      }, function (err) {
-        console.error(err);
-      });
+      }, ErrorHandling);
   }
 
   function GetPlaylists(musicApi, userId, offsetValue) {
@@ -160,9 +164,7 @@
             }, waitTime);
           });
         }
-      }, function (err) {
-        console.error(err);
-      });
+      }, ErrorHandling);
   }
 
   function TracksFromPlaylist(musicApi, playlistItem, userTracks) {
@@ -187,9 +189,15 @@
             SendToDatabase(userTracks);
           }
         });
-      }, function (err) {
-        console.error(err);
-      });
+      }, ErrorHandling);
+  }
+
+  function ErrorHandling(err) {
+    console.error(err.responseText, err);
+
+    if(err.status === 401) {
+      console.error("Denied permission, go to Home and try again");
+    }
   }
 
   function SendToDatabase(userTracks) {
