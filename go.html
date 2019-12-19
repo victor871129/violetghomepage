@@ -3,6 +3,7 @@
 <head>
     <title>Spotify Search In All My Own Playlists Global - violet.guru</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -13,21 +14,38 @@
 </head>
 <body>
 <div class="container">
+    <h6>Spotify Search In All My Own Playlists Global - violet.guru</h6>
     <div class="progress">
         <div id="progressBar" class="progress-bar bg-success" style="width: 5%"></div>
     </div>
-    <table id="mainTable" class="table">
-        <thead>
-        <tr>
-            <th scope="col">Playlist</th>
-            <th scope="col">Title</th>
-            <th scope="col">Artist</th>
-            <th scope="col">Album</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div class="row invisible">
+        <div class="col-sm">
+        </div>
+        <div class="col-sm">
+            <label class="sr-only" for="searchInput">Search:</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Search:</div>
+                </div>
+                <input type="text" class="form-control" id="searchInput" placeholder="Search text"
+                       value="Love">
+            </div>
+        </div>
+        <div class="col-sm">
+        </div>
+    </div>
+        <table id="mainTable" class="table">
+            <thead>
+            <tr>
+                <th scope="col">Playlist</th>
+                <th scope="col">Title</th>
+                <th scope="col">Artist</th>
+                <th scope="col">Album</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
 </div>
 <script>
   var accessToken;
@@ -37,7 +55,8 @@
   var totalPlaylists = 0;
   var waitTime = 0;
   var db;
-  var progressBar = $("#progressBar");
+  const progressBar = $("#progressBar");
+  const searchInput = $("#searchInput");
 
   //https://github.com/spotify/web-api-auth-examples
   $().ready(function () {
@@ -67,13 +86,6 @@
     })[0].split('=')[1];
   }
 
-  const GetQueryString = function (name) {
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)')
-      .exec(window.location.search);
-
-    return (results !== null) ? results[1] || 0 : false;
-  }
-
   function ResetData() {
     db.delete();
   }
@@ -97,7 +109,7 @@
     //console.log("Get Playlist " + offsetValue);
 
     //https://github.com/JMPerez/spotify-web-api-js
-    spotifyApi.getUserPlaylists(userId, {offset: offsetValue})
+    spotifyApi.getUserPlaylists(userId, {offset: offsetValue}, null)
       .then(function (data) {
         //console.log('User playlists', data);
         if (data.items.length > 0 && offsetValue < 1500) { //TESTDO Poner 15000
@@ -196,7 +208,7 @@
       //https://github.com/dfahlander/Dexie.js/issues/161
       .toArray(a => a.sort((a, b) => a.playlistName < b.playlistName ? -1 : a.playlistName > b.playlistName ? 1 : (a.titleName < b.titleName ? -1 : a.titleName > b.titleName ? 1 : 0)))
       .then(function (result) {
-        result.forEach(function (item, index) {
+        result.forEach(function (item) {
           $("#mainTable>tbody").append("<tr><td>" + item.playlistName +
             "</td><td>" + item.titleName +
             "</td><td>" + item.artistsText +
