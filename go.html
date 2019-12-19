@@ -68,7 +68,7 @@
   /**
    * @type {Array}
    */
-  const userTracks = [];
+  let userTracks = [];
   let playlistCount = 0;
   let totalPlaylists = 0;
   let waitTime = 0;
@@ -100,7 +100,7 @@
     });
   });
 
-  divContainer.on('keyup', '#searchInput', () => {
+  divContainer.on('change', '#searchInput', () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(FilterByParameter, 1000)
   });
@@ -123,6 +123,7 @@
   function StartGetData() {
     console.log("Loading playlists names");
     progressBar.width(5 + "%");
+    userTracks = [];
     const musicApi = new SpotifyWebApi();
     musicApi.setAccessToken(accessToken);
     musicApi.getMe(null, null)
@@ -198,8 +199,6 @@
   }
 
   function SendToDatabase() {
-    console.log("Saving tracks to database");
-
     //TODO put() executes .then a lot
     userTracks.forEach(function (element) {
       const artistsList = [];
@@ -218,6 +217,8 @@
         playlistOrder: 0
       });
     });
+
+    console.log("Search is ready");
   }
 
   function FilterByParameter() {
