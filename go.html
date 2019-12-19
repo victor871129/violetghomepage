@@ -99,7 +99,7 @@
     });
   });
 
-  divContainer.on('change', '#searchInput', () => {
+  divContainer.on('keyup', '#searchInput', () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(FilterByParameter, 1000)
   });
