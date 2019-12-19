@@ -68,7 +68,6 @@
   /**
    * @type {Array}
    */
-  let userTracks = [];
   let playlistCount = 0;
   let totalPlaylists = 0;
   let waitTime = 0;
@@ -123,7 +122,6 @@
   function StartGetData() {
     console.log("Loading playlists names");
     progressBar.width(5 + "%");
-    userTracks = [];
     const musicApi = new SpotifyWebApi();
     musicApi.setAccessToken(accessToken);
     musicApi.getMe(null, null)
@@ -136,6 +134,7 @@
   }
 
   function GetPlaylists(musicApi, userId, offsetValue) {
+    const userTracks = [];
     //console.log("Get Playlist " + offsetValue);
 
     //https://github.com/JMPerez/spotify-web-api-js
@@ -159,7 +158,7 @@
           playlistItems.forEach(function (playlistItem) {
             waitTime += 100;
             setTimeout(function () {
-              TracksFromPlaylist(musicApi, playlistItem);
+              TracksFromPlaylist(musicApi, playlistItem, userTracks);
             }, waitTime);
           });
         }
@@ -168,7 +167,7 @@
       });
   }
 
-  function TracksFromPlaylist(musicApi, playlistItem) {
+  function TracksFromPlaylist(musicApi, playlistItem, userTracks) {
     //console.log("TracksFromPlaylist");
     musicApi.getPlaylist(playlistItem.id, undefined, undefined)
       .then(function (data) {
@@ -187,7 +186,7 @@
 
           if (playlistCount === 0 && index === data.tracks.items.length - 1) {
             //console.log("userTracks", userTracks.length, userTracks[2]);
-            SendToDatabase();
+            SendToDatabase(userTracks);
 
 
             FilterByParameter();
@@ -198,7 +197,7 @@
       });
   }
 
-  function SendToDatabase() {
+  function SendToDatabase(userTracks) {
     //TODO put() executes .then a lot
     userTracks.forEach(function (element) {
       const artistsList = [];
