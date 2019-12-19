@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="container">
-    <h6>Spotify Search In All My Own Playlists Global - violet.guru</h6>
+    <h4>Spotify Search In All My Own Playlists Global - violet.guru</h4>
     <div class="progress">
         <div id="progressBar" class="progress-bar bg-success" style="width: 5%"></div>
     </div>
@@ -34,18 +34,19 @@
         <div class="col-sm">
         </div>
     </div>
-        <table id="mainTable" class="table">
-            <thead>
-            <tr>
-                <th scope="col">Playlist</th>
-                <th scope="col">Title</th>
-                <th scope="col">Artist</th>
-                <th scope="col">Album</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    <table id="mainTable" class="table">
+        <thead>
+        <tr>
+            <th scope="col">Playlist</th>
+            <th scope="col">Title</th>
+            <th scope="col">Artist</th>
+            <th scope="col">Album</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div>Report a bug: hello@violet.guru</div>
 </div>
 <script>
   let accessToken;
@@ -144,7 +145,7 @@
 
   function TracksFromPlaylist(musicApi, playlistItem) {
     //console.log("TracksFromPlaylist");
-    musicApi.getPlaylist(playlistItem, undefined, undefined)
+    musicApi.getPlaylist(playlistItem.id, undefined, undefined)
       .then(function (data) {
         playlistCount--;
 
