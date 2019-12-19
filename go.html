@@ -65,9 +65,6 @@
 
   let accessToken;
   const playlistItems = [];
-  /**
-   * @type {Array}
-   */
   let playlistCount = 0;
   let totalPlaylists = 0;
   let waitTime = 0;
@@ -85,15 +82,14 @@
 
     db = new Dexie("tracks_database");
     db.version(1).stores({
-      tracks: '++id,titleName,artistsText,albumName,playlistName,playlistOrder,isDoubleDollar,artistsList,playlistId'
+      tracks: '++id,titleName,artistsText,albumName,playlistName,playlistIsDollar,artistsList,playlistId'
     });
 
     db.tracks.count().then(function (countTracks) {
-      console.log("Database started");
-
       if (countTracks === 0) {
         StartGetData();
       } else {
+        console.log("Now you can search");
         FilterByParameter();
       }
     });
@@ -185,11 +181,8 @@
           });
 
           if (playlistCount === 0 && index === data.tracks.items.length - 1) {
-            //console.log("userTracks", userTracks.length, userTracks[2]);
+            console.log("userTracks", userTracks.length, userTracks[2]);
             SendToDatabase(userTracks);
-
-
-            FilterByParameter();
           }
         });
       }, function (err) {
@@ -198,26 +191,28 @@
   }
 
   function SendToDatabase(userTracks) {
-    //TODO put() executes .then a lot
+    const dataItems = [];
     userTracks.forEach(function (element) {
       const artistsList = [];
       element.track.artists.forEach(function (item) {
         artistsList.push(item.name);
       });
 
-      db.tracks.put({
+      dataItems.push({
         playlistId: element.playlistId,
         albumName: element.track.album.name,
         artistsList: element.track.artists,
         artistsText: artistsList.join(", "),
         titleName: element.track.name,
         playlistName: element.playlistName,
-        isDoubleDollar: element.playlistIsDollar,
-        playlistOrder: 0
+        playlistIsDollar: element.playlistIsDollar
       });
     });
 
-    console.log("Search is ready");
+    db.tracks.bulkPut(dataItems).then(() => {
+      console.log("Now you can search");
+      FilterByParameter();
+    });
   }
 
   function FilterByParameter() {
@@ -238,7 +233,7 @@
     const withDoubleDollar = false;
     db.tracks
       .filter(function (track) {
-        return (withDoubleDollar || !track.isDoubleDollar) &&
+        return (withDoubleDollar || !track.playlistIsDollar) &&
           (parameter.test(track.titleName) || parameter.test(track.albumName) || parameter.test(track.artistsText));
       })
       //https://github.com/dfahlander/Dexie.js/issues/161
