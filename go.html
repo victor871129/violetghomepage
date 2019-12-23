@@ -69,7 +69,7 @@
         <tbody>
         </tbody>
     </table>
-    <div>Report a bug at hello@violet.guru       Tip: Add two dollar characters $$ to a playlist you don't want to process.</div>
+    <div>Report a bug at hello@violet.guru - Tip: Add two dollar characters $$ to a playlist name you want to hide.</div>
 
 </div>
 <script>
@@ -198,10 +198,11 @@
   }
 
   function ErrorHandling(err) {
-    console.error(err.responseText, err.status, err);
-
     if (err.status === 401) {
-      console.error("Denied permission, go to Home and try again");
+      console.error("401 Unauthorized status, go to Home and try again");
+    }
+    else {
+      console.error("Status: " + err.status, "ResponseText: " + err.responseText, err);
     }
   }
 
@@ -246,6 +247,7 @@
 
     //No Hacer:
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
+    //Por el login a Spotify no se puede hacer PWA
 
     mainTable.find("tbody").html("");
 
