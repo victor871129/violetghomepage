@@ -1,8 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Spotify Search In All My Own Playlists Global - violet.guru</title>
     <meta charset="utf-8">
+    <meta name="robots" CONTENT="noindex,nofollow">
+    <title>Spotify Search In All My Own Playlists Global - violet.guru</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
@@ -116,7 +117,8 @@
 
   divContainer.on('click', "#resetLibrary", ResetData);
 
-  /** https://stackoverflow.com/a/29934692
+  //https://stackoverflow.com/a/29934692
+  /**
    * @return {string}
    */
   function GetHashAccessToken(thisUrl, param) {
@@ -235,9 +237,6 @@
     });
   }
 
-  /**
-   * @return {string}
-   */
   function MessageTable(textValue) {
     mainTable.find("tbody").html(`<tr><td colspan='4'>${textValue}</td></tr>`);
   }
