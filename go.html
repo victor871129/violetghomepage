@@ -173,35 +173,40 @@
           playlistItems.forEach(function (playlistItem) {
             waitTime += 100;
             setTimeout(function () {
-              TracksFromPlaylist(musicApi, playlistItem, userTracks);
+              TracksFromPlaylist(musicApi, playlistItem, userTracks, 0);
             }, waitTime);
           });
         }
       }, ErrorHandling);
   }
 
-  function TracksFromPlaylist(musicApi, playlistItem, userTracks) {
-    //console.log("TracksFromPlaylist");
-    musicApi.getPlaylist(playlistItem.id, undefined, undefined)
+  function TracksFromPlaylist(musicApi, playlistItem, userTracks, offsetValue) {
+    //console.log("TracksFromPlaylist", userTracks.length, offsetValue);
+    musicApi.getPlaylist(playlistItem.id, {offset: offsetValue}, undefined)
       .then(function (data) {
-        playlistCount--;
-
         //console.log('Current data', data);
-        data.tracks.items.forEach(function (trackInfo, index) {
-          //console.log('Track info', trackInfo);
-          progressBar.width(15 + 80 * (totalPlaylists - playlistCount) / totalPlaylists + "%");
-          userTracks.push({
-            playlistId: playlistItem.id,
-            playlistName: playlistItem.name,
-            playlistIsDollar: playlistItem.isDollar,
-            track: trackInfo.track
+        if (data.tracks.items.length > 0 && offsetValue < 4000) {
+          data.tracks.items.forEach(function (trackInfo) {
+            //console.log('Track info', trackInfo);
+            userTracks.push({
+              playlistId: playlistItem.id,
+              playlistName: playlistItem.name,
+              playlistIsDollar: playlistItem.isDollar,
+              track: trackInfo.track
+            });
           });
 
-          if (playlistCount === 0 && index === data.tracks.items.length - 1) {
+          TracksFromPlaylist(musicApi, playlistItem, userTracks, offsetValue + 100);
+
+        } else {
+          playlistCount--;
+          progressBar.width(15 + 80 * (totalPlaylists - playlistCount) / totalPlaylists + "%");
+
+          if (playlistCount === 0) {//TODO && index === data.tracks.items.length - 1) {
             //console.log("userTracks", userTracks.length, userTracks[2]);
             SendToDatabase(userTracks);
           }
-        });
+        }
       }, ErrorHandling);
   }
 
@@ -244,6 +249,7 @@
 
   function FilterByParameter() {
     //TODO
+    //Bug: no aparecen canciones de lista Oidas, lista H
     //Buscar en liked songs
     //busqueda con acentos insensitivos
     //Anchor con path hacia la lista:   Organizar\Little man
