@@ -147,7 +147,8 @@
       .then(function (data) {
         //console.log('User', data);
         GetPlaylists(musicApi, data.id, 0);
-      }, ErrorHandling);
+      })
+      .catch(ErrorHandling);
   }
 
   function GetPlaylists(musicApi, userId, offsetValue) {
@@ -170,7 +171,30 @@
           });
 
           GetPlaylists(musicApi, userId, offsetValue + 50);
+        } else {
+          GetLikedSongs(musicApi, userTracks, 0);
+        }
+      })
+      .catch(ErrorHandling);
+  }
 
+  function GetLikedSongs(musicApi, userTracks, offsetValue) {
+    promiseThrottle.add(musicApi.getMySavedTracks.bind(this, {limit: 50, offset: offsetValue}))
+      .then((data) => {
+        //console.log('User', data);
+        if (data.next && offsetValue < 8000) {
+          const likedSongs = data.items.map((trackInfo) => {
+            return {
+              playlistId: "1000000000001",
+              playlistName: "[Liked]",
+              playlistIsDollar: false,
+              track: trackInfo.track
+            }
+          });
+
+          userTracks.push(...likedSongs);
+
+          GetLikedSongs(musicApi, userTracks, offsetValue + 50);
         } else {
           //TODO TEST playlistItems = playlistItems.slice(100, 110);
           playlistCount = playlistItems.length;
@@ -181,7 +205,8 @@
             TracksFromPlaylist(musicApi, playlistItem, userTracks, 0);
           });
         }
-      }, ErrorHandling);
+      })
+      .catch(ErrorHandling);
   }
 
   function TracksFromPlaylist(musicApi, playlistItem, userTracks, offsetValue) {
@@ -191,7 +216,7 @@
     promiseThrottle.add(musicApi.getPlaylistTracks.bind(this, playlistItem.id, {offset: offsetValue}))
       .then(function (data) {
         //console.log('Current data', data);
-        if (data.next && offsetValue < 4000) {
+        if (data.next && offsetValue < 8000) {
           data.items.forEach(function (trackInfo) {
             //console.log('Track info', trackInfo);
             userTracks.push({
@@ -213,7 +238,8 @@
             SendToDatabase(userTracks);
           }
         }
-      }, ErrorHandling);
+      })
+      .catch(ErrorHandling);
   }
 
   function ErrorHandling(err) {
@@ -255,8 +281,6 @@
 
   function FilterByParameter() {
     //TODO
-    //Bug: no aparecen canciones de lista Oidas, lista H
-    //Buscar en liked songs
     //busqueda con acentos insensitivos
     //Anchor con path hacia la lista:   Organizar\Little man
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
