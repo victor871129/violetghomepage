@@ -14,6 +14,7 @@
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/spotify-web-api-js@1.2.0/src/spotify-web-api.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/2.0.4/dexie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/promise-throttle@1.0.1/lib/main.min.js"></script>
     <style>
         #consoleMessages {
             list-style: none;
@@ -82,7 +83,6 @@
   const playlistItems = [];
   let playlistCount = 0;
   let totalPlaylists = 0;
-  let waitTime = 0;
   let db;
   const progressBar = $("#progressBar");
   const searchInput = $("#searchInput");
@@ -90,6 +90,7 @@
   const divContainer = $("div.container");
   let searchTimeout = null;
   let isFocus = false;
+  let promiseThrottle;
 
   //https://github.com/spotify/web-api-auth-examples
   $().ready(function () {
@@ -133,6 +134,11 @@
   }
 
   function StartGetData() {
+    promiseThrottle = new PromiseThrottle({
+      requestsPerSecond: 10,           // up to 10 request per second
+      promiseImplementation: Promise  // the Promise library you are using
+    });
+
     console.log("Loading playlists names");
     progressBar.width(5 + "%");
     const musicApi = new SpotifyWebApi();
@@ -149,10 +155,10 @@
     //console.log("Get Playlist " + offsetValue);
 
     //https://github.com/JMPerez/spotify-web-api-js
-    musicApi.getUserPlaylists(userId, {offset: offsetValue}, undefined)
+    promiseThrottle.add(musicApi.getUserPlaylists.bind(this, userId, {limit: 50, offset: offsetValue}))
       .then(function (data) {
         //console.log('User playlists', data);
-        if (data.items.length > 0 && offsetValue < 1500) {
+        if (data.next && offsetValue < 1500) {
           data.items.forEach(function (playList) {
             if (playList.owner.id === userId) {
               playlistItems.push({
@@ -163,18 +169,16 @@
             }
           });
 
-          GetPlaylists(musicApi, userId, offsetValue + 20);
+          GetPlaylists(musicApi, userId, offsetValue + 50);
 
         } else {
+          //TODO TEST playlistItems = playlistItems.slice(100, 110);
           playlistCount = playlistItems.length;
           totalPlaylists = playlistItems.length;
           console.log("Loading tracks of " + playlistCount + " playlists");
           progressBar.width(15 + "%");
           playlistItems.forEach(function (playlistItem) {
-            waitTime += 100;
-            setTimeout(function () {
-              TracksFromPlaylist(musicApi, playlistItem, userTracks, 0);
-            }, waitTime);
+            TracksFromPlaylist(musicApi, playlistItem, userTracks, 0);
           });
         }
       }, ErrorHandling);
@@ -182,11 +186,13 @@
 
   function TracksFromPlaylist(musicApi, playlistItem, userTracks, offsetValue) {
     //console.log("TracksFromPlaylist", userTracks.length, offsetValue);
-    musicApi.getPlaylist(playlistItem.id, {offset: offsetValue}, undefined)
+
+    //https://github.com/thelinmichael/spotify-web-api-node/issues/50#issuecomment-493699928
+    promiseThrottle.add(musicApi.getPlaylistTracks.bind(this, playlistItem.id, {offset: offsetValue}))
       .then(function (data) {
         //console.log('Current data', data);
-        if (data.tracks.items.length > 0 && offsetValue < 4000) {
-          data.tracks.items.forEach(function (trackInfo) {
+        if (data.next && offsetValue < 4000) {
+          data.items.forEach(function (trackInfo) {
             //console.log('Track info', trackInfo);
             userTracks.push({
               playlistId: playlistItem.id,
@@ -202,7 +208,7 @@
           playlistCount--;
           progressBar.width(15 + 80 * (totalPlaylists - playlistCount) / totalPlaylists + "%");
 
-          if (playlistCount === 0) {//TODO && index === data.tracks.items.length - 1) {
+          if (playlistCount === 0) {
             //console.log("userTracks", userTracks.length, userTracks[2]);
             SendToDatabase(userTracks);
           }
