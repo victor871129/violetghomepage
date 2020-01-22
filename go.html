@@ -40,7 +40,7 @@
     <button type="button" class="btn btn-outline-success" id="resetLibrary">Reload database</button>
     <h4 class="logoCompany">Spotify Violet Search - Search In All My Own Playlists - violet.guru</h4>
     <div class="progress">
-        <div id="progressBar" class="progress-bar bg-success" style="width: 5%"></div>
+        <div id="progressBar" class="progress-bar bg-success" style="width: 0%"></div>
     </div>
     <div class="row invisible">
         <div class="col-sm">
@@ -139,8 +139,7 @@
       promiseImplementation: Promise  // the Promise library you are using
     });
 
-    console.log("Loading playlists names");
-    progressBar.width(5 + "%");
+    progressBar.width(3 + "%");
     const musicApi = new SpotifyWebApi();
     musicApi.setAccessToken(accessToken);
     musicApi.getMe(null, null)
@@ -172,6 +171,8 @@
 
           GetPlaylists(musicApi, userId, offsetValue + 50);
         } else {
+          console.log("Initializing");
+          progressBar.width(5 + "%");
           GetLikedSongs(musicApi, userTracks, 0);
         }
       })
