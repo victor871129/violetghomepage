@@ -308,7 +308,13 @@
           (parameter.test(track.titleName) || parameter.test(track.albumName) || parameter.test(track.artistsText));
       })
       //https://github.com/dfahlander/Dexie.js/issues/161
-      .toArray(a => a.sort((a, b) => a.playlistName < b.playlistName ? -1 : a.playlistName > b.playlistName ? 1 : (a.titleName < b.titleName ? -1 : a.titleName > b.titleName ? 1 : 0)))
+      .toArray(a => a.sort((a, b) => {
+        const playNameA = a.playlistName.toLowerCase();
+        const playNameB = b.playlistName.toLowerCase();
+        const titleNameA = a.titleName.toLowerCase();
+        const titleNameB = b.titleName.toLowerCase();
+        return playNameA < playNameB ? -1 : playNameA > playNameB ? 1 : (titleNameA < titleNameB ? -1 : titleNameA > titleNameB ? 1 : 0);
+      }))
       .then(function (result) {
 
         mainTable.find("tbody").html("");
