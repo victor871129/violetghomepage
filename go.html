@@ -52,7 +52,7 @@
                     <div class="input-group-text">Search:</div>
                 </div>
                 <input type="text" class="form-control" id="searchInput" placeholder="Search text"
-                       value="Rock" autofocus>
+                       value="Rock">
             </div>
         </div>
         <div class="col-sm">
@@ -333,7 +333,7 @@
         progressBar.parent().addClass("invisible");
         searchInput.parent().parent().parent().removeClass("invisible");
         if (!isFocus) {
-          searchInput.focus();
+          searchInput.focus().select();
           isFocus = true;
         }
       })
