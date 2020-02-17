@@ -216,18 +216,18 @@
     //https://github.com/thelinmichael/spotify-web-api-node/issues/50#issuecomment-493699928
     promiseThrottle.add(musicApi.getPlaylistTracks.bind(this, playlistItem.id, {offset: offsetValue}))
       .then(function (data) {
-        //console.log('Current data', data);
-        if (data.next && offsetValue < 8000) {
-          data.items.forEach(function (trackInfo) {
-            //console.log('Track info', trackInfo);
-            userTracks.push({
-              playlistId: playlistItem.id,
-              playlistName: playlistItem.name,
-              playlistIsDollar: playlistItem.isDollar,
-              track: trackInfo.track
-            });
+        //console.log('Current name', playlistItem.name, data.next);
+        data.items.forEach(function (trackInfo) {
+          //console.log('Track info', trackInfo);
+          userTracks.push({
+            playlistId: playlistItem.id,
+            playlistName: playlistItem.name,
+            playlistIsDollar: playlistItem.isDollar,
+            track: trackInfo.track
           });
+        });
 
+        if (data.next && offsetValue < 8000) {
           TracksFromPlaylist(musicApi, playlistItem, userTracks, offsetValue + 100);
 
         } else {
