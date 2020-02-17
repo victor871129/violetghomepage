@@ -273,8 +273,8 @@
     });
   }
 
-  function MessageTable(textValue) {
-    mainTable.find("tbody").html(`<tr><td colspan='4'>${textValue}</td></tr>`);
+  function MessageTable(tableBody, textValue) {
+    tableBody.html(`<tr><td colspan='4'>${textValue}</td></tr>`);
   }
 
   function FilterByParameter() {
@@ -288,17 +288,18 @@
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
     //Por el login a Spotify no se puede hacer PWA
 
-    mainTable.find("tbody").html("");
+    let tableBody = mainTable.find("tbody");
+    tableBody.html("");
 
     let queryText = searchInput.val();
     if (queryText.length < 2) {
-      MessageTable("Search text is short");
+      MessageTable(tableBody, "Search text is short");
       return;
     }
 
     let parameter = new RegExp(queryText, "i");
     const withDoubleDollar = false;
-    MessageTable("Searching...");
+    MessageTable(tableBody, "Searching...");
     db.tracks
       .filter(function (track) {
         return (withDoubleDollar || !track.playlistIsDollar) &&
@@ -314,13 +315,13 @@
       }))
       .then(function (result) {
 
-        mainTable.find("tbody").html("");
+        tableBody.html("");
 
         if (result.length === 0) {
-          MessageTable("No results");
+          MessageTable(tableBody, "No results");
         } else {
           result.forEach(function (item) {
-            mainTable.find("tbody").append("<tr><td>" + item.playlistName +
+            tableBody.append("<tr><td>" + item.playlistName +
               "</td><td>" + item.titleName +
               "</td><td>" + item.artistsText +
               "</td><td>" + item.albumName + "</td></tr>");
