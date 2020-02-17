@@ -102,14 +102,16 @@
       tracks: '++id,titleName,artistsText,albumName,playlistName,playlistIsDollar,artistsList,playlistId'
     });
 
-    db.tracks.count().then((tracksCount) => {
-      if (tracksCount === 0) {
-        StartGetData();
-      } else {
-        console.log("Now you can search from your local database");
-        FilterByParameter();
-      }
-    });
+    db.tracks.count()
+      .then((tracksCount) => {
+        if (tracksCount === 0) {
+          StartGetData();
+        } else {
+          console.log("Now you can search from your local database");
+          FilterByParameter();
+        }
+      })
+      .catch(error => console.log(error));
   });
 
   divContainer.on('keyup', '#searchInput', () => {
@@ -130,7 +132,7 @@
   }
 
   function ResetData() {
-    db.delete().then(() => location.reload());
+    db.delete().then(() => location.reload()).catch(error => console.error(error));
   }
 
   function StartGetData() {
@@ -267,10 +269,12 @@
       });
     });
 
-    db.tracks.bulkPut(dataItems).then(() => {
-      console.log("Now you can search from your local database");
-      FilterByParameter();
-    });
+    db.tracks.bulkPut(dataItems)
+      .then(() => {
+        console.log("Now you can search from your local database");
+        FilterByParameter();
+      })
+      .catch(error => console.error(error));
   }
 
   function MessageTable(tableBody, textValue) {
@@ -335,6 +339,7 @@
           isFocus = true;
         }
       })
+      .catch(error => console.log(error))
     ;
   }
 </script>
