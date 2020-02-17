@@ -102,8 +102,8 @@
       tracks: '++id,titleName,artistsText,albumName,playlistName,playlistIsDollar,artistsList,playlistId'
     });
 
-    db.tracks.count().then(function (countTracks) {
-      if (countTracks === 0) {
+    db.tracks.count().then((tracksCount) => {
+      if (tracksCount === 0) {
         StartGetData();
       } else {
         console.log("Now you can search from your local database");
@@ -184,14 +184,12 @@
       .then((data) => {
         //console.log('User', data);
         if (data.next && offsetValue < 8000) {
-          const likedSongs = data.items.map((trackInfo) => {
-            return {
-              playlistId: "1000000000001",
-              playlistName: "[Liked]",
-              playlistIsDollar: false,
-              track: trackInfo.track
-            }
-          });
+          const likedSongs = data.items.map((trackInfo) => ({
+            playlistId: "1000000000001",
+            playlistName: "[Liked]",
+            playlistIsDollar: false,
+            track: trackInfo.track
+          }));
 
           userTracks.push(...likedSongs);
 
@@ -254,9 +252,8 @@
   function SendToDatabase(userTracks) {
     const dataItems = [];
     userTracks.forEach(function (element) {
-      const artistsList = [];
-      element.track.artists.forEach(function (item) {
-        artistsList.push(item.name);
+      const artistsList = element.track.artists.map(({name}) => name);
+        return name;
       });
 
       dataItems.push({
