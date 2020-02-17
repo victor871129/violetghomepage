@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="robots" CONTENT="noindex,nofollow">
-    <title>Spotify Violet Search - Search In All My Own Playlists - violet.guru</title>
+    <title>Spotify Song Search In Playlists - Search A Song In All My Own Playlists - violet.guru</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
@@ -38,9 +38,9 @@
 <div class="container">
     <a href="https://violet.guru" id="spotifyDenied" class="btn btn-outline-success">Go to Home</a>
     <button type="button" class="btn btn-outline-success" id="resetLibrary">Reload database</button>
-    <h4 class="logoCompany">Spotify Violet Search - Search In All My Own Playlists - violet.guru</h4>
+    <h4 class="logoCompany">Spotify Song Search In Playlists - Search A Song In All My Own Playlists - violet.guru</h4>
     <div class="progress">
-        <div id="progressBar" class="progress-bar bg-success" style="width: 0%"></div>
+        <div id="progressBar" class="progress-bar bg-success" style="width: 0"></div>
     </div>
     <div class="row invisible">
         <div class="col-sm">
@@ -197,7 +197,7 @@
 
           GetLikedSongs(musicApi, userTracks, offsetValue + 50);
         } else {
-          //TODO TEST playlistItems = playlistItems.slice(100, 110);
+          //TODO TEVL playlistItems = playlistItems.slice(100, 110);
           playlistCount = playlistItems.length;
           totalPlaylists = playlistItems.length;
           console.log("Loading tracks of " + playlistCount + " playlists");
