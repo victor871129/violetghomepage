@@ -253,20 +253,16 @@
 
   function SendToDatabase(userTracks) {
     const dataItems = [];
-    userTracks.forEach(function (element) {
-      const artistsList = element.track.artists.map(({name}) => name);
-        return name;
-      });
+    const artistsList = element.track.artists.map(({name}) => name);
 
-      dataItems.push({
-        playlistId: element.playlistId,
-        albumName: element.track.album.name,
-        artistsList: element.track.artists,
-        artistsText: artistsList.join(", "),
-        titleName: element.track.name,
-        playlistName: element.playlistName,
-        playlistIsDollar: element.playlistIsDollar
-      });
+    dataItems.push({
+      playlistId: element.playlistId,
+      albumName: element.track.album.name,
+      artistsList: element.track.artists,
+      artistsText: artistsList.join(", "),
+      titleName: element.track.name,
+      playlistName: element.playlistName,
+      playlistIsDollar: element.playlistIsDollar
     });
 
     db.tracks.bulkPut(dataItems)
