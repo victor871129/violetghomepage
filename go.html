@@ -78,8 +78,10 @@
 </div>
 <script>
   ConsoleLogHTML.connect(document.getElementById("consoleMessages"));
+  window.LogRocket && window.LogRocket.init('kg4o95/violet');
 
   let accessToken;
+  const likedId = "1000000000001";
   const playlistItems = [];
   let playlistCount = 0;
   let totalPlaylists = 0;
@@ -187,7 +189,7 @@
         //console.log('User', data);
         if (data.next && offsetValue < 8000) {
           const likedSongs = data.items.map((trackInfo) => ({
-            playlistId: "1000000000001",
+            playlistId: likedId,
             playlistName: "[Liked]",
             playlistIsDollar: false,
             track: trackInfo.track
@@ -279,16 +281,23 @@
     tableBody.html(`<tr><td colspan='4'>${textValue}</td></tr>`);
   }
 
+  const GetPlayListLink = (playlistId, playlistName) => {
+      if(playlistId === likedId) {
+          return playlistName
+      }
+
+      return `<a target="_blank" href=https://open.spotify.com/playlist/${playlistId}>${playlistName}</a>`
+  }
+
   function FilterByParameter() {
     //TODO
     //busqueda con acentos insensitivos
-    //Anchor con path hacia la lista:   Organizar\Little man
     //Similar songs: sin necesidad de presionar bot�n, buscar duplicados a continuaci�n y guardar esa info en la db
     //Confirmar salida de página
 
     //No Hacer:
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
-    //Por el login a Spotify no se puede hacer PWA
+    //no hacer PWA
 
     let tableBody = mainTable.find("tbody");
     tableBody.html("");
@@ -309,8 +318,8 @@
       })
       //https://github.com/dfahlander/Dexie.js/issues/161
       .toArray(a => a.sort((a, b) => {
-        const playNameA = a.playlistName.toLowerCase();
-        const playNameB = b.playlistName.toLowerCase();
+        const playNameA = a.playlistId;
+        const playNameB = b.playlistId;
         const titleNameA = a.titleName.toLowerCase();
         const titleNameB = b.titleName.toLowerCase();
         return playNameA < playNameB ? -1 : playNameA > playNameB ? 1 : (titleNameA < titleNameB ? -1 : titleNameA > titleNameB ? 1 : 0);
@@ -323,8 +332,8 @@
           MessageTable(tableBody, "No results");
         } else {
           result.forEach(function (item) {
-            tableBody.append("<tr><td>" + item.playlistName +
-              "</td><td>" + item.titleName +
+            tableBody.append("<tr><td>" + GetPlayListLink(item.playlistId, item.playlistName) +
+               "</td><td>" + item.titleName +
               "</td><td>" + item.artistsText +
               "</td><td>" + item.albumName + "</td></tr>");
           });
