@@ -19,7 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/promise-throttle@1.0.1/lib/main.min.js"></script>
     <style>
         body {
-            font-family: 'Open Sans Condensed', sans-serif;
+            /* font-family: 'Open Sans Condensed', sans-serif; TODO */
         }
 
         .triplePoints {
@@ -29,7 +29,7 @@
         }
 
         .largeFont {
-
+            font-size: 1.1rem;
         }
 
         #consoleMessages {
@@ -92,7 +92,7 @@
   let db;
   const progressBar = $("#progressBar");
   const searchInput = $("#searchInput");
-  const tableBody = $("#trackList");
+  const trackList = $("#trackList");
   const divContainer = $("div.container");
   let searchTimeout = null;
   let isFocus = false;
@@ -295,17 +295,17 @@
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
     //no hacer PWA
 
-    tableBody.html("");
+    trackList.html("");
 
     let queryText = searchInput.val();
     if (queryText.length < 2) {
-      MessageTable(tableBody, "Search text is short");
+      MessageTable(trackList, "Search text is short");
       return;
     }
 
     let parameter = new RegExp(queryText, "i");
     const withDoubleDollar = false;
-    MessageTable(tableBody, "Searching...");
+    MessageTable(trackList, "Searching...");
     db.tracks
       .filter(function (track) {
         return (withDoubleDollar || !track.playlistIsDollar) &&
@@ -321,21 +321,21 @@
       }))
       .then(function (result) {
 
-        tableBody.html("");
+        trackList.html("");
 
         if (result.length === 0) {
-          MessageTable(tableBody, "No results");
+          MessageTable(trackList, "No results");
         } else {
           result.forEach(function (item) {
-            tableBody.append(
+            trackList.append(
                 (item.playlistId === likedId ?
                     `<li class="list-group-item">` :
                     `<a target="_blank" href=https://open.spotify.com/playlist/${
                         item.playlistId} class="list-group-item list-group-item-action">`)
 
-                + `<div class="text-success">${
+                + `<div class="text-success triplePoints">${
                     item.playlistName}</div><div class="largeFont">${
-                    item.titleName}</div><div class="triplePoints">${
+                    item.titleName}</div><div class="triplePoints text-muted">${
                     item.artistsText} • ${item.albumName}</div>`
 
             + (item.playlistId === likedId ? '</li>': '</a>'));
