@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/darkly/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-w+8Gqjk9Cuo6XH9HKHG5t5I1VR4YBNdPt/29vwgfZR485eoEJZ8rJRbm3TR32P6k" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300&display=swap" rel="stylesheet">
     <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
     <script type="application/javascript"
             src="//cdn.rawgit.com/Alorel/console-log-html/master/console-log-html.min.js"></script>
@@ -17,9 +18,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/2.0.4/dexie.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/promise-throttle@1.0.1/lib/main.min.js"></script>
     <style>
+        body {
+            font-family: 'Open Sans Condensed', sans-serif;
+        }
+
+        .triplePoints {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .largeFont {
+
+        }
+
         #consoleMessages {
             list-style: none;
-            border: 1px solid #000;
+            padding: 0 0 0 0.3rem;
+            background-color: #000;
+            border-radius: 0.25rem;
             overflow-y: auto;
             overflow-x: hidden;
             max-height: 100px;
@@ -27,10 +44,6 @@
 
         .btn.btn-outline-success {
             opacity: 50%;
-        }
-
-        .table th {
-            border-top: none;
         }
     </style>
     <link rel="stylesheet" href="main.css">
@@ -59,20 +72,10 @@
         <div class="col-sm">
         </div>
     </div>
-    <p>Messages (Scrollable)</p>
+    <p class="mb-0">Messages (Scrollable)</p>
     <ul id="consoleMessages"></ul>
-    <table id="mainTable" class="table">
-        <thead>
-        <tr>
-            <th scope="col">Playlist</th>
-            <th scope="col">Title</th>
-            <th scope="col">Artist</th>
-            <th scope="col">Album</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="trackList" class="list-group">
+    </div>
     <div>Report a bug at hello@violet.guru - Tip: Add two dollar characters $$ to a playlist name you want to hide.
     </div>
 
@@ -89,7 +92,7 @@
   let db;
   const progressBar = $("#progressBar");
   const searchInput = $("#searchInput");
-  const mainTable = $("#mainTable");
+  const tableBody = $("#trackList");
   const divContainer = $("div.container");
   let searchTimeout = null;
   let isFocus = false;
@@ -279,15 +282,7 @@
   }
 
   function MessageTable(tableBody, textValue) {
-    tableBody.html(`<tr><td colspan='4'>${textValue}</td></tr>`);
-  }
-
-  const GetPlayListLink = (playlistId, playlistName) => {
-      if(playlistId === likedId) {
-          return playlistName
-      }
-
-      return `<a target="_blank" href=https://open.spotify.com/playlist/${playlistId}>${playlistName}</a>`
+    tableBody.html(`<li class="list-group-item active">${textValue}</li>`);
   }
 
   function FilterByParameter() {
@@ -300,7 +295,6 @@
     //console messages que aparezca de arriba hacia abajo. Poner mas CSS
     //no hacer PWA
 
-    let tableBody = mainTable.find("tbody");
     tableBody.html("");
 
     let queryText = searchInput.val();
@@ -333,10 +327,18 @@
           MessageTable(tableBody, "No results");
         } else {
           result.forEach(function (item) {
-            tableBody.append("<tr><td>" + GetPlayListLink(item.playlistId, item.playlistName) +
-               "</td><td>" + item.titleName +
-              "</td><td>" + item.artistsText +
-              "</td><td>" + item.albumName + "</td></tr>");
+            tableBody.append(
+                (item.playlistId === likedId ?
+                    `<li class="list-group-item">` :
+                    `<a target="_blank" href=https://open.spotify.com/playlist/${
+                        item.playlistId} class="list-group-item list-group-item-action">`)
+
+                + `<div class="text-success">${
+                    item.playlistName}</div><div class="largeFont">${
+                    item.titleName}</div><div class="triplePoints">${
+                    item.artistsText} • ${item.albumName}</div>`
+
+            + (item.playlistId === likedId ? '</li>': '</a>'));
           });
         }
 
